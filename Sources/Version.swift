@@ -43,21 +43,12 @@ extension Version: Hashable {
 	}
 
 	public static func ==(lhs: Version, rhs: Version) -> Bool {
-		guard lhs.major == rhs.major else { return false }
-		guard lhs.minor == rhs.minor else { return false }
-		guard lhs.patch == rhs.patch else { return false }
-		return true
+		return (lhs.major, lhs.minor, lhs.patch) == (rhs.major, rhs.minor, rhs.patch)
 	}
 }
 
 extension Version: Comparable {
 	public static func < (lhs: Version, rhs: Version) -> Bool {
-		if lhs.major != rhs.major {
-			return lhs.major < rhs.major
-		} else if lhs.minor != rhs.minor {
-			return lhs.minor < rhs.minor
-		} else {
-			return lhs.patch < rhs.patch
-		}
+		return (lhs.major, lhs.minor, lhs.patch) < (rhs.major, rhs.minor, rhs.patch)
 	}
 }
