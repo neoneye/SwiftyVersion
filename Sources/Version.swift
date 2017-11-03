@@ -1,32 +1,6 @@
 // Copyright © 2017 Simon Strandgaard. All rights reserved.
 import Foundation
 
-fileprivate extension Scanner {
-	/// Returns a string, scanned as long as characters from a given character set are encountered, or `nil` if none are found.
-	func ss_scanCharacters(set: CharacterSet) -> String? {
-		var value: NSString? = ""
-		if scanCharacters(from: set, into: &value),
-			let value = value as String? {
-			return value
-		}
-		return nil
-	}
-	
-	/// Returns the given string if scanned, or `nil` if not found.
-	func ss_scanString(string: String) -> String? {
-		var value: NSString? = ""
-		if scanString(string, into: &value),
-			let value = value as String? {
-			return value
-		}
-		return nil
-	}
-	
-	var ss_atEnd: Bool {
-		return isAtEnd
-	}
-}
-
 public struct Version {
 	public let major: Int
 	public let minor: Int
@@ -39,33 +13,17 @@ public struct Version {
 	}
 	
 	public init?(_ string: String) {
-		let s = Scanner(string: string)
-		let dd = CharacterSet.decimalDigits
-		guard let majorString = s.ss_scanCharacters(set: dd) else {
+		let components: [String] = string.components(separatedBy: ".")
+		if components.count != 3 {
 			return nil
 		}
-		guard s.ss_scanString(string: ".") != nil else {
+		guard let major: Int = Int(components[0]) else {
 			return nil
 		}
-		guard let minorString = s.ss_scanCharacters(set: dd) else {
+		guard let minor: Int = Int(components[1]) else {
 			return nil
 		}
-		guard s.ss_scanString(string: ".") != nil else {
-			return nil
-		}
-		guard let patchString = s.ss_scanCharacters(set: dd) else {
-			return nil
-		}
-		guard s.ss_atEnd else {
-			return nil
-		}
-		guard let major: Int = Int(majorString) else {
-			return nil
-		}
-		guard let minor: Int = Int(minorString) else {
-			return nil
-		}
-		guard let patch: Int = Int(patchString) else {
+		guard let patch: Int = Int(components[2]) else {
 			return nil
 		}
 		self.init(major: major, minor: minor, patch: patch)
